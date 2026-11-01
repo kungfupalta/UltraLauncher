@@ -23,8 +23,13 @@ jobs:
 
       - name: Android SDK (licencias y plataforma 35)
         run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ -x "$SDKM" ]; then
+            yes | "$SDKM" --licenses > /dev/null || true
+            "$SDKM" "platforms;android-35" "build-tools;35.0.0" > /dev/null || true
+          else
+            echo "sdkmanager no encontrado; se usa el SDK del runner tal cual."
+          fi
 
       - name: Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
